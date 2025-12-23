@@ -41,19 +41,55 @@ This app uses a **split deployment**:
 - **Frontend**: Served from `chat.andierni.ch` (your own server)
 - **Backend**: Socket.IO server deployed on Render
 
-### Quick Start
+### Deploy Backend to Render (server.js is deployed as web app on render.com)
 
-1. **Deploy backend to Render**:
-   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
-   - Get your Render service URL (e.g., `https://your-app.onrender.com`)
+1. **Create a GitHub repository** (if not already done):
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin <your-github-repo-url>
+   git push -u origin main
+   ```
 
-2. **Update frontend configuration**:
+2. **Deploy to Render**:
+   - Go to [render.com](https://render.com) and sign up/login
+   - Click **"New +"** → **"Web Service"**
+   - Connect your GitHub repository
+   - Configure the service:
+     - **Name**: `chat-socket-server` (or your preferred name)
+     - **Environment**: `Node`
+     - **Build Command**: `npm install`
+     - **Start Command**: `npm start`
+     - **Plan**: Free tier is fine for testing
+     - **Health Check Path**: `/health`
+   - Click **"Create Web Service"**
+   - Wait for deployment (2-3 minutes)
+   - Copy your Render URL (e.g., `https://chat-nivx.onrender.com`)
+
+3. **Update frontend configuration**:
    - Update `SOCKET_SERVER_URL` in `public/script.js` with your Render URL
    - Update Socket.IO script src in `public/index.html` with your Render URL
+   - (Already configured for `https://chat-nivx.onrender.com`)
 
-3. **Upload frontend files** to `chat.andierni.ch`
+4. **Upload frontend files**:
+   - Upload the `public/` folder contents to `chat.andierni.ch`
+   - Ensure `index.html` is accessible at the root
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions.
+### Testing
+
+1. **Test backend health**:
+   ```bash
+   curl https://chat-nivx.onrender.com/health
+   ```
+   Should return: `{"status":"ok","service":"socket.io-server"}`
+
+2. **Test frontend**:
+   - Open `https://chat.andierni.ch` in your browser
+   - Check browser console for connection errors
+   - Try joining a room and sending messages
+
+For detailed deployment instructions and troubleshooting, see [DEPLOYMENT.md](./DEPLOYMENT.md).
 
 ### Environment Variables
 
@@ -70,7 +106,7 @@ chat/
 │   ├── script.js    # Client-side JavaScript
 │   └── style.css    # Styles
 ├── server.js        # Express + Socket.IO server
-├── vercel.json      # Vercel configuration
+├── render.yaml      # Render configuration (optional)
 ├── package.json     # Dependencies
 └── README.md        # This file
 ```
@@ -110,7 +146,7 @@ The Admin UI allows you to:
 - **Backend**: Node.js, Express, Socket.IO
 - **Frontend**: Vanilla JavaScript, HTML5, CSS3
 - **Monitoring**: Socket.IO Admin UI
-- **Deployment**: Vercel
+- **Deployment**: Render (backend), Self-hosted (frontend)
 
 ## License
 

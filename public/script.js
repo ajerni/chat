@@ -1,6 +1,6 @@
 // Connect to Render backend server
 // Update this URL to match your Render service URL
-const SOCKET_SERVER_URL = 'https://your-app-name.onrender.com'; // Replace with your Render URL
+const SOCKET_SERVER_URL = 'https://chat-nivx.onrender.com'; // Replace with your Render URL
 
 const socket = io(SOCKET_SERVER_URL, {
   transports: ['websocket', 'polling']
