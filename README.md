@@ -35,44 +35,25 @@ npm run devStart
 http://localhost:3000
 ```
 
-## Deployment to Vercel
+## Deployment
 
-### Important Note About Socket.IO on Vercel
+This app uses a **split deployment**:
+- **Frontend**: Served from `chat.andierni.ch` (your own server)
+- **Backend**: Socket.IO server deployed on Render
 
-⚠️ **WebSocket Limitations**: Vercel's serverless functions have timeout limits and may not support long-lived WebSocket connections perfectly. The current setup should work for basic use, but for production with many concurrent users, consider:
+### Quick Start
 
-1. **Current Setup** (Works for testing/small scale):
-   - Deploy using: `vercel`
-   - WebSocket connections may disconnect after inactivity
-   - Best for development and small-scale deployments
+1. **Deploy backend to Render**:
+   - See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed instructions
+   - Get your Render service URL (e.g., `https://your-app.onrender.com`)
 
-2. **Production Alternatives** (Recommended for production):
-   - **Railway** - Great for Socket.IO apps
-   - **Render** - Supports WebSockets well
-   - **Fly.io** - Good for real-time apps
-   - **DigitalOcean App Platform** - Full WebSocket support
-   - **VPS** (DigitalOcean, Linode, etc.) - Full control
+2. **Update frontend configuration**:
+   - Update `SOCKET_SERVER_URL` in `public/script.js` with your Render URL
+   - Update Socket.IO script src in `public/index.html` with your Render URL
 
-If you need to deploy to Vercel specifically, the current configuration should work, but be aware of potential connection stability issues with long-lived WebSocket connections.
+3. **Upload frontend files** to `chat.andierni.ch`
 
-### Deploy to Vercel
-
-1. Install Vercel CLI (if not already installed):
-```bash
-npm i -g vercel
-```
-
-2. Deploy:
-```bash
-vercel
-```
-
-3. Follow the prompts to link your project
-
-4. For production deployment:
-```bash
-vercel --prod
-```
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions.
 
 ### Environment Variables
 

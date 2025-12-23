@@ -8,7 +8,11 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: true, // Allow all origins (for client app) and admin.socket.io
+    origin: [
+      'https://chat.andierni.ch',
+      'http://chat.andierni.ch',
+      'https://admin.socket.io'
+    ],
     methods: ["GET", "POST"],
     credentials: true
   }
@@ -20,8 +24,12 @@ instrument(io, {
   mode: "development", // Use "production" for production
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+// Static files are served from chat.andierni.ch
+// This server only handles Socket.IO connections
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', service: 'socket.io-server' });
+});
 
 // Store users and rooms
 const users = {}; // { socketId: { name, joinedRooms: [] } }
@@ -261,8 +269,11 @@ if (require.main === module) {
   });
 } else {
   // Running as a module (Vercel)
-  // Vercel will handle the server
+  // Export the Express app for Vercel serverless functions
+  // Note: WebSockets have limitations on Vercel serverless
 }
 
 // Export for Vercel
-module.exports = server;
+// Note: Vercel serverless functions don't support WebSockets
+// This app requires a platform that supports persistent connections (Railway, Render, Fly.io, etc.)
+module.exports = app;

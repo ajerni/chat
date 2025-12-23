@@ -1,10 +1,10 @@
-// Get protocol and host dynamically
-const protocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
-const host = window.location.hostname;
-const port = window.location.port ? `:${window.location.port}` : '';
-const socketUrl = `${protocol}//${host}${port}`;
+// Connect to Render backend server
+// Update this URL to match your Render service URL
+const SOCKET_SERVER_URL = 'https://your-app-name.onrender.com'; // Replace with your Render URL
 
-const socket = io(socketUrl);
+const socket = io(SOCKET_SERVER_URL, {
+  transports: ['websocket', 'polling']
+});
 
 // DOM elements
 const messageContainer = document.getElementById('message-container');
