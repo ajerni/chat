@@ -281,10 +281,39 @@ function appendMessage(name, message, type) {
   messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
-// Auto-focus message input
+// Auto-focus message input with mobile optimizations
 messageInput.addEventListener('focus', () => {
-  messageInput.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // Scroll input into view on mobile
+  setTimeout(() => {
+    messageInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    // Prevent iOS zoom on input focus (already handled with font-size: 16px in CSS)
+  }, 300);
 });
+
+// Prevent double-tap zoom on mobile
+let lastTouchEnd = 0;
+document.addEventListener('touchend', (event) => {
+  const now = Date.now();
+  if (now - lastTouchEnd <= 300) {
+    event.preventDefault();
+  }
+  lastTouchEnd = now;
+}, false);
+
+// Handle virtual keyboard on mobile
+if ('visualViewport' in window) {
+  const viewport = window.visualViewport;
+  viewport.addEventListener('resize', () => {
+    // Adjust layout when keyboard appears/disappears
+    const height = viewport.height;
+    document.documentElement.style.setProperty('--viewport-height', `${height}px`);
+  });
+}
+
+// Improve touch scrolling on mobile
+if (messageContainer) {
+  messageContainer.style.webkitOverflowScrolling = 'touch';
+}
 
 // Request joined rooms list on load
 socket.on('connect', () => {
